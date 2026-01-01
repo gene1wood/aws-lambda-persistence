@@ -5,7 +5,10 @@ on: push
 jobs:
   build:
     name: Build distribution
-    if: startsWith(github.ref, 'refs/tags/')  # only build on tag pushes
+    # Initially let's publish every commit to Test PyPi, then when it's confirmed that things
+    # work well, we can publish to Test PyPi only on tagged releases
+    # if: startsWith(github.ref, 'refs/tags/')  # only build on tag pushes
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
     runs-on: ubuntu-latest
 
