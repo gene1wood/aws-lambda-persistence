@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "aws-lambda-persistence"
-version = "0.9.0"
+version = "1.0.0"
 description = 'A Python module that enables AWS Lambda functions to maintain state and persist data between invocations by writing to a dict-like variable. It achieves this by using the DynamoDB free tier and so it can be used without adding any costs to your project.'
 readme = "README.md"
 requires-python = ">=3.10"
