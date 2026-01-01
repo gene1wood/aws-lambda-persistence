@@ -1,0 +1,55 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: A Lambda function which tests aws-lambda-persistence by running the tests from the aws-lambda-persistence AWS Lambda layer.
+Metadata:
+  Source: https://github.com/gene1wood/aws-lambda-persistence
+Resources:
+  LambdaTester:
+    Type: AWS::Lambda::Function
+    Properties:
+      Architectures:
+        - x86_64
+      Code:
+        ZipFile: from aws_lambda_persistence import lambda_handler
+      Description: A Lambda function which tests aws-lambda-persistence by running the tests from the aws-lambda-persistence AWS Lambda layer.
+      FunctionName: aws-lambda-persistence-layer-tester
+      Handler: index.lambda_handler
+      Layers:
+        - arn:aws:lambda:us-west-2:220481034027:layer:aws-lambda-persistence:2
+      PackageType: Zip
+      Role: !GetAtt LambdaTesterRole.Arn
+      Runtime: python3.14
+      Timeout: 30
+  LambdaTesterRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Policies:
+      - PolicyName: AllowPersistentMap
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - dynamodb:CreateTable
+            - dynamodb:TagResource
+            - dynamodb:PutItem
+            - dynamodb:DescribeTable
+            - dynamodb:GetItem
+            Resource: arn:aws:dynamodb:*:*:table/TestingAWSLambdaPersistence
+      - PolicyName: AllowPersistentMapTesting
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - dynamodb:DeleteTable
+            - dynamodb:DeleteItem
+            Resource: arn:aws:dynamodb:*:*:table/TestingAWSLambdaPersistence

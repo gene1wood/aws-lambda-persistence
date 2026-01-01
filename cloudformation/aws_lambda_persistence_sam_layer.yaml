@@ -1,0 +1,35 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: AWS Lambda Layer containing a Python module that enables AWS Lambda
+  functions to maintain state and persist data between invocations by writing
+  to a dict-like variable. It achieves this by using the DynamoDB free tier and
+  so it can be used without adding any costs to your project.
+Metadata:
+  Source: https://github.com/gene1wood/aws-lambda-persistence
+Transform: 'AWS::Serverless-2016-10-31'
+Resources:
+  LambdaLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      CompatibleRuntimes:
+        - python3.9
+        - python3.10
+        - python3.11
+        - python3.12
+        - python3.13
+        - python3.14
+      ContentUri: s3://aws-lambda-persistence-layer/layer.zip
+      Description: A Python module that enables AWS Lambda functions to maintain
+        state and persist data between invocations by writing to a dict-like
+        variable. It achieves this by using the DynamoDB free tier and so it
+        can be used without adding any costs to your project.
+      LayerName: aws-lambda-persistence
+      LicenseInfo: GPL-3.0-or-later
+  LambdaLayerPermission:
+    Type: AWS::Lambda::LayerVersionPermission
+    Properties:
+      Action: lambda:GetLayerVersion
+      LayerVersionArn: !Ref LambdaLayer
+      Principal: '*'  # Allow usage from any AWS account
+Outputs:
+  LayerArn:
+    Value: !Ref LambdaLayer
